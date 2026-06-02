@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Store - Autenticação</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+        html, body { height: 100%; overflow: hidden; background: linear-gradient(135deg, #0b4625 0%, #052413 100%); font-family: 'Segoe UI', sans-serif; }
+        .auth-wrapper { height: 100vh; }
+        .auth-card { 
+            background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+            width: 100%; max-width: 450px; border: 1px solid rgba(255, 255, 255, 0.25); 
+            transition: max-width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+        }
+        .brand-logo { max-width: 160px; }
+        .form-control, .form-select { background-color: #f1f3f5; border: none; font-size: 0.88rem; }
+        .form-control:focus, .form-select:focus { background-color: #e9ecef; border: none; box-shadow: 0 0 0 0.25rem rgba(12, 87, 46, 0.15); }
+        .form-label { font-size: 0.8rem; font-weight: 600; }
+        .btn-nexus { background-color: #00753c; color: #fff; font-size: 0.95rem; font-weight: 600; border: none; }
+        .btn-nexus:hover { background-color: #005c2f; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="auth-wrapper d-flex align-items-center justify-content-center p-3">
+    <div class="auth-card rounded-4 shadow-lg p-4 p-md-5" id="mainCard">
+        
+        <div class="text-center mb-4">
+            <img src="/imagens/logo.png" alt="Nexus Store" class="brand-logo img-fluid mx-auto d-block">
+        </div>
+
+        <div id="loginSection" class="mx-auto" style="max-width: 360px;">
+            <p class="text-secondary small text-center mb-4">Bem-vindo! Faça login para continuar</p>
+            <form action="/auth/login" method="POST">
+                <div class="mb-3">
+                    <label class="form-label text-dark">E-mail</label>
+                    <input type="email" class="form-control py-2" name="email" placeholder="seu@email.com" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-dark">Senha</label>
+                    <input type="password" class="form-control py-2" name="senha" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-nexus w-100 rounded-3 py-2 mb-3">Entrar</button>
+            </form>
+            <div class="text-center mt-3">
+                <a class="text-secondary small text-decoration-none fw-semibold" style="cursor:pointer" onclick="mostrarCadastro()">Não tem uma conta? <span class="text-success text-decoration-underline">Cadastre-se aqui</span></a>
+            </div>
+        </div>
+
+        <div id="cadastroSection" class="d-none">
+            <p class="text-secondary small text-center mb-4">Crie sua conta. Preencha os dados abaixo para se cadastrar.</p>
+            <form action="/auth/cadastro" method="POST">
+                
+                <p class="text-muted small fw-bold mb-2 text-uppercase tracking-wider" style="font-size: 0.72rem;">Dados Pessoais</p>
+                <div class="row g-2 mb-3">
+                    <div class="col-md-3"><label class="form-label">Nome Completo</label><input type="text" class="form-control" name="nome" placeholder="Nome Completo" required></div>
+                    <div class="col-md-3"><label class="form-label">E-mail</label><input type="email" class="form-control" name="email" placeholder="E-mail" required></div>
+                    <div class="col-md-3"><label class="form-label">CPF</label><input type="text" class="form-control" name="cpf" placeholder="CPF" required></div>
+                    <div class="col-md-3"><label class="form-label">Telefone</label><input type="text" class="form-control" name="telefone" placeholder="Telefone"></div>
+                </div>
+
+                <p class="text-muted small fw-bold mb-2 text-uppercase mt-3" style="font-size: 0.72rem; tracking-wider: 0.5px;">Endereço</p>
+                <div class="row g-2 mb-3">
+                    <div class="col-md-2"><label class="form-label">CEP</label><input type="number" class="form-control" name="cep" placeholder="CEP"></div>
+                    <div class="col-md-3"><label class="form-label">Rua</label><input type="text" class="form-control" name="rua" placeholder="Rua"></div>
+                    <div class="col-md-1"><label class="form-label">Número</label><input type="number" class="form-control" name="numero" placeholder="Nº"></div>
+                    <div class="col-md-2"><label class="form-label">Bairro</label><input type="text" class="form-control" name="bairro" placeholder="Bairro"></div>
+                    <div class="col-md-3"><label class="form-label">Cidade</label><input type="text" class="form-control" name="cidade" placeholder="Cidade"></div>
+                    <div class="col-md-1">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select px-2" name="estado">
+                            <option value="PR" selected>PR</option><option value="SP">SP</option><option value="SC">SC</option><option value="RS">RS</option>
+                        </select>
+                    </div>
+                </div>
+
+                <p class="text-muted small fw-bold mb-2 text-uppercase mt-3" style="font-size: 0.72rem;">Segurança</p>
+                <div class="row g-2 mb-4">
+                    <div class="col-md-6"><label class="form-label">Senha</label><input type="password" class="form-control" name="senha" placeholder="Senha" required></div>
+                    <div class="col-md-6"><label class="form-label">Confirmar Senha</label><input type="password" class="form-control" placeholder="Confirmar Senha" required></div>
+                </div>
+
+                <button type="submit" class="btn btn-nexus w-100 rounded-3 py-2.5 mb-3 text-uppercase">Finalizar Cadastro</button>
+            </form>
+            <div class="text-center">
+                <a class="text-secondary small text-decoration-none fw-semibold" style="cursor:pointer" onclick="mostrarLogin()">Já tem uma conta? <span class="text-success text-decoration-underline">Faça login</span></a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const card = document.getElementById('mainCard'), login = document.getElementById('loginSection'), cadastro = document.getElementById('cadastroSection');
+    function mostrarCadastro() { login.classList.add('d-none'); cadastro.classList.remove('d-none'); card.style.maxWidth = '950px'; }
+    function mostrarLogin() { cadastro.classList.add('d-none'); login.classList.remove('d-none'); card.style.maxWidth = '450px'; }
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+    <style>
+        .bg-nexus-sidebar { background-color: #0b4625 !important; }
+        .text-nexus-light { color: #8cd19d !important; }
+        .btn-nexus { background-color: #0c572e; color: white; border: 1px solid #11783f; }
+        .btn-nexus:hover { background-color: #07381d; color: white; }
+        .sidebar { width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; z-index: 100; }
+        .main-content { margin-left: 260px; width: calc(100% - 260px); min-height: 100vh; }
+        .card-product { border: 1px solid #eef2f0; border-radius: 8px; transition: transform 0.2s; }
+        .card-product:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .nav-link-nexus { color: rgba(255,255,255,0.85); padding: 0.6rem 1rem; border-radius: 4px; display: block; text-decoration: none; }
+        .nav-link-nexus:hover { color: #ffffff; background-color: rgba(255,255,255,0.08); }
+        .nav-link-nexus.active { color: #ffffff; background-color: rgba(255,255,255,0.15); font-weight: 500; }
+        .sidebar-logo { max-width: 140px; height: auto; object-fit: contain; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<div class="d-flex">
+    <div class="sidebar bg-nexus-sidebar text-white p-4 d-flex flex-column shadow shadow-sm">
+        <div class="text-center mb-5 pt-2">
+            <img src="/imagens/logo.png" alt="Nexus Store" class="sidebar-logo">
+        </div>
+
+        <ul class="nav flex-column flex-grow-1 gap-1">
+            <li><a href="/" class="nav-link-nexus active">Início</a></li>
+            <li><a href="/pedidos" class="nav-link-nexus">Meus Pedidos</a></li>
+            <li><a href="/carrinho" class="nav-link-nexus">Carrinho</a></li>
+            <li><a href="/minha-conta" class="nav-link-nexus">Minha Conta</a></li>
+        </ul>
+
+        <div class="pt-3 border-top border-secondary border-opacity-20">
+            <a href="/logout" class="nav-link-nexus text-danger opacity-75"><i class="bi bi-box-arrow-left"></i> Sair</a>
+        </div>
+    </div>
+
+    <div class="main-content d-flex flex-column bg-light">
+        <header class="bg-white border-bottom py-3 px-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="input-group" style="max-width: 450px;">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" class="form-control bg-light border-start-0" placeholder="Buscar produtos...">
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-muted small">Olá, <strong class="text-dark">João</strong></span>
+                    <a href="/carrinho" class="position-relative text-dark">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
+                            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                        </svg>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 0.6rem; padding: 0.25rem 0.4rem;">2</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 flex-grow-1">
