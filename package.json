@@ -1,16 +1,23 @@
 {
   "name": "nexusstore",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "E-commerce com Estoque",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Kaue/Tiago/Pimenta/JFelipe",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^5.0.2",
-    "express": "^5.2.1"
+    "bcrypt": "^5.1.1",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mysql2": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
