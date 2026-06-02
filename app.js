@@ -31,10 +31,21 @@ app.get('/', (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-    console.log(`[SERVER] Servidor rodando com sucesso em http://localhost:${PORT}`);
-});
-
 app.get('/login', (req, res) => {
     res.render('layouts/login', { title: 'Nexus Store - Autenticação' });
+});
+
+
+app.get('/produtos', (req, res) => {
+    res.render('produtos/listar', { title: 'Nexus Store - Painel de Produtos' });
+});
+
+
+app.get('/produtos/novo', (req, res) => {
+    res.render('produtos/cadastro', { title: 'Nexus Store - Novo Produto' });
+});
+
+
+app.listen(PORT, () => {
+    console.log(`[SERVER] Servidor rodando com sucesso em http://localhost:${PORT}`);
 });
