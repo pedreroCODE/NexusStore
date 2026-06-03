@@ -1,0 +1,89 @@
+<%- include('partials/header') %>
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4 fw-bold">Meus Pedidos</h2>
+    </div>
+    
+    <!-- Lista de Histórico de Pedidos -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3 px-4">Nº do Pedido</th>
+                            <th class="py-3">Data da Compra</th>
+                            <th class="py-3">Valor Total</th>
+                            <th class="py-3">Status</th>
+                            <th class="py-3 text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (pedidos && pedidos.length > 0) { %>
+                            <% pedidos.forEach(p => { %>
+                                <tr class="<%= (pedidoSelecionado && pedidoSelecionado.id_pedido === p.id_pedido) ? 'table-success-light border-start border-success border-3' : '' %>">
+                                    <td class="px-4 py-3 fw-bold">#<%= p.id_pedido %></td>
+                                    <td class="py-3"><%= p.data_compra %></td>
+                                    <td class="py-3 fw-semibold">R$ <%= p.valor_total.toFixed(2).replace('.', ',') %></td>
+                                    <td class="py-3">
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2"><%= p.status_pedido %></span>
+                                    </td>
+                                    <td class="py-3 text-center">
+                                        <a href="/pedidos?id=<%= p.id_pedido %>" class="btn btn-sm btn-outline-secondary">Ver Detalhes</a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Ainda não realizaste nenhum pedido.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalhes do Pedido Selecionado -->
+    <div class="col-lg-5">
+        <% if (pedidoSelecionado) { %>
+            <div class="card shadow-sm border-0 p-4">
+                <h4 class="fw-bold mb-2">Pedido #<%= pedidoSelecionado.id_pedido %></h4>
+                <p class="text-muted small mb-4">Realizado em <%= pedidoSelecionado.data_compra %></p>
+                
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-4">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Produto</th>
+                                <th class="text-center">Qtd</th>
+                                <th class="text-end">Preço</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% pedidoSelecionado.itens.forEach(item => { %>
+                                <tr>
+                                    <td class="py-2 fw-semibold text-secondary"><%= item.nome %></td>
+                                    <td class="py-2 text-center"><%= item.quantidade_comprada %></td>
+                                    <td class="py-2 text-end">R$ <%= (item.preco_congelado * item.quantidade_comprada).toFixed(2).replace('.', ',') %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-dark">Total do Pedido:</span>
+                    <h4 class="fw-bold text-success mb-0">R$ <%= pedidoSelecionado.valor_total.toFixed(2).replace('.', ',') %></h4>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="card shadow-sm border-0 p-4 text-center text-muted py-5">
+                <p class="mb-0">Seleciona um pedido ao lado para visualizar os detalhes.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,75 @@
+<%- include('partials/header') %>
+
+<div class="row">
+    <!-- Tabela de Produtos -->
+    <div class="col-lg-8">
+        <h2 class="mb-4 fw-bold">Meu Carrinho</h2>
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3 px-4">Produto</th>
+                            <th class="py-3">Preço Unitário</th>
+                            <th class="py-3 text-center">Quantidade</th>
+                            <th class="py-3">Subtotal</th>
+                            <th class="py-3 text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (carrinho && carrinho.length > 0) { %>
+                            <% carrinho.forEach(item => { %>
+                                <tr>
+                                    <td class="px-4 py-3 d-flex align-items-center">
+                                        <!-- Pode usar imagens padrão enquanto as oficiais não chegam -->
+                                        <img src="<%= item.url_foto || 'https://via.placeholder.com/50' %>" alt="Produto" width="50" class="me-3 rounded">
+                                        <span class="fw-semibold"><%= item.nome %></span>
+                                    </td>
+                                    <td class="py-3">R$ <%= item.preco.toFixed(2).replace('.', ',') %></td>
+                                    <td class="py-3 text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button type="button" class="btn btn-outline-secondary">-</button>
+                                            <button type="button" class="btn btn-outline-secondary" disabled><%= item.quantidade_comprada %></button>
+                                            <button type="button" class="btn btn-outline-secondary">+</button>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 fw-bold">R$ <%= (item.preco * item.quantidade_comprada).toFixed(2).replace('.', ',') %></td>
+                                    <td class="py-3 text-center">
+                                        <a href="/carrinho/remover/<%= item.id_produto %>" class="text-danger"><i class="bi bi-trash"></i></a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">O teu carrinho está vazio.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <a href="/" class="btn btn-outline-secondary px-4"><i class="bi bi-arrow-left"></i> Continuar a Comprar</a>
+    </div>
+
+    <!-- Resumo do Pedido -->
+    <div class="col-lg-4 mt-5">
+        <div class="card shadow-sm border-0 p-4">
+            <h4 class="fw-bold mb-4">Resumo do Pedido</h4>
+            <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">Total de Itens:</span>
+                <span class="fw-bold"><%= totalItens || 0 %></span>
+            </div>
+            <div class="d-flex justify-content-between mb-4 align-items-center">
+                <span class="text-muted">Total da Compra:</span>
+                <h3 class="fw-bold text-success mb-0">R$ <%= valorTotal || '0,00' %></h3>
+            </div>
+            <form action="/pedidos/finalizar" method="POST">
+                <button type="submit" class="btn btn-success w-100 py-3 rounded-3" style="background-color: #198754;">
+                    <i class="bi bi-lock-fill"></i> Finalizar Pedido
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
