@@ -25,14 +25,22 @@
 <div class="d-flex">
     <div class="sidebar bg-nexus-sidebar text-white p-4 d-flex flex-column shadow shadow-sm">
         <div class="text-center mb-5 pt-2">
-            <img src="/imagens/logo.png" alt="Nexus Store" class="sidebar-logo">
+            <img src="/imagens/logo2.png" alt="Nexus Store" class="sidebar-logo">
         </div>
 
         <ul class="nav flex-column flex-grow-1 gap-1">
-            <li><a href="/" class="nav-link-nexus active">Início</a></li>
-            <li><a href="/pedidos" class="nav-link-nexus">Meus Pedidos</a></li>
-            <li><a href="/carrinho" class="nav-link-nexus">Carrinho</a></li>
-            <li><a href="/minha-conta" class="nav-link-nexus">Minha Conta</a></li>
+            <% if (typeof usuarioLogado !== 'undefined' && usuarioLogado.isAdmin) { %>
+                <li><a href="/" class="nav-link-nexus">Início</a></li>
+                <li><a href="/produtos" class="nav-link-nexus">Produto</a></li>
+                <li><a href="/categorias" class="nav-link-nexus">Categoria</a></li>
+                <li><a href="/admin/pedidos" class="nav-link-nexus">Pedidos</a></li>
+                <li><a href="/admin/clientes" class="nav-link-nexus">Clientes</a></li>
+            <% } else { %>
+                <li><a href="/" class="nav-link-nexus">Início</a></li>
+                <li><a href="/pedidos" class="nav-link-nexus">Meus Pedidos</a></li>
+                <li><a href="/carrinho" class="nav-link-nexus">Carrinho</a></li>
+                <li><a href="/minha-conta" class="nav-link-nexus">Minha Conta</a></li>
+            <% } %>
         </ul>
 
         <div class="pt-3 border-top border-secondary border-opacity-20">
@@ -41,15 +49,11 @@
     </div>
 
     <div class="main-content d-flex flex-column bg-light">
-        <header class="bg-white border-bottom py-3 px-4 shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="input-group" style="max-width: 450px;">
-                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" class="form-control bg-light border-start-0" placeholder="Buscar produtos...">
-                </div>
+        <header class="bg-nexus-sidebar border-bottom border-secondary border-opacity-20 py-3 px-4 shadow-sm">
+            <div id="headerContainer" class="d-flex justify-content-end align-items-center">
                 <div class="d-flex align-items-center gap-3">
-                    <span class="text-muted small">Olá, <strong class="text-dark">João</strong></span>
-                    <a href="/carrinho" class="position-relative text-dark">
+                    <span class="text-white opacity-75 small">Olá, <strong class="text-white">João</strong></span>
+                    <a href="/carrinho" class="position-relative text-white opacity-75 link-light">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
                             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                         </svg>
