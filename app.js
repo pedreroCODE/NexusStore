@@ -2,10 +2,13 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 
+// Quando o banco estiver pronto, tire as barras (//) da linha abaixo:
+// const ClienteController = require('./src/controllers/ClienteController');
+
 require('./src/database/conexao'); 
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001; 
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src', 'views'));
@@ -21,14 +24,12 @@ app.use(session({
     cookie: { secure: false } 
 }));
 
-
+// Middleware de Sessão Temporária 
 app.use((req, res, next) => {
     if (!req.session.usuario) {
         req.session.usuario = {
             nome: "João",
             isAdmin: false 
-            //true para 'adm'
-            //false para 'cliente'
         };
     }
     
@@ -36,6 +37,9 @@ app.use((req, res, next) => {
     res.locals.currentPath = req.path;
     next();
 });
+
+
+// ROTAS DE EXIBIÇÃO DE TELAS (GET)
 
 app.get('/', (req, res) => {
     res.render('layouts/index', { title: 'Nexus Store - Home' });
@@ -71,7 +75,6 @@ app.get('/pedidos', (req, res) => {
     res.render('pedidos/pedidos', { title: 'Nexus Store - Meus Pedidos', pedidos: samplePedidos, pedidoSelecionado });
 });
 
-
 app.get('/carrinho', (req, res) => {
     const carrinho = [
         { id_produto: 101, nome: 'Mouse Sem Fio Logitech', preco: 129.90, quantidade_comprada: 1, url_foto: '' },
@@ -82,6 +85,30 @@ app.get('/carrinho', (req, res) => {
     const valorTotal = valorTotalNumber.toFixed(2).replace('.', ',');
     res.render('pedidos/carrinho', { title: 'Nexus Store - Carrinho', carrinho, totalItens, valorTotal });
 });
+
+// ROTAS DE PROCESSAMENTO (POST)
+
+app.post('/auth/login', (req, res) => {
+    console.log("Navegando: Indo para a Home!");
+    res.redirect('/');
+});
+
+app.post('/auth/cadastro', (req, res) => {
+    console.log("Navegando: Indo para o Login!");
+    res.redirect('/login');
+});
+
+//(Para Sábado: tire as barras quando usar o banco)//
+// app.post('/auth/login', ClienteController.realizarLogin);
+// app.post('/auth/cadastro', ClienteController.realizarCadastro);
+
+// Rota de Logout
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/login');
+});
+
+// INICIALIZAÇÃO
 
 app.listen(PORT, () => {
     console.log(`[SERVER] Servidor rodando com sucesso em http://localhost:${PORT}`);
