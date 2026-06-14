@@ -3,7 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const db = require('./src/database/conexao');
 
-// Importa as tuas rotas de Pedidos e Carrinho separadas (Padrão MVC)
+// importa rotas
 const pedidosRoutes = require('./src/routes/pedidosRoutes');
 const ClienteController = require('./src/controllers/ClienteController');
 
@@ -26,7 +26,7 @@ app.use(session({
     cookie: { secure: false } 
 }));
 
-// Middleware de sessão e variáveis globais de view
+
 app.use((req, res, next) => {
     res.locals.usuarioLogado = req.session.usuario || null;
     res.locals.currentPath = req.path;
@@ -37,9 +37,32 @@ app.use((req, res, next) => {
         next();
 });
 
-// ROTAS DE EXIBIÇÃO DE TELAS (GET)
-app.get('/', (req, res) => {
-    res.render('layouts/index', { title: 'Nexus Store - Home' });
+
+//app.get('/', (req, res) => {
+ //   res.render('layouts/index', { title: 'Nexus Store - Home' });
+//});
+
+
+app.get('/', async (req, res) => {
+    try {
+        //todos os produtos gravados no banco
+        const [produtos] = await db.query(
+            'SELECT id_produto, nome, preco, url_foto, quantidade_estoque, descricao_produto FROM Produto ORDER BY id_produto DESC'
+        );
+
+        // busca produtos para mostrar
+        res.render('layouts/index', { 
+            title: 'Nexus Store - Home',
+            produtos: produtos 
+        });
+    } catch (erro) {
+        console.error('Erro ao carregar os produtos na Home:', erro);
+        // nao dar erro caso nao carregar banco
+        res.render('layouts/index', { 
+            title: 'Nexus Store - Home', 
+            produtos: [] 
+        });
+    }
 });
 
 app.get('/login', (req, res) => {
@@ -52,6 +75,36 @@ app.get('/produtos', (req, res) => {
 
 app.get('/produtos/novo', (req, res) => {
     res.render('produtos/cadastro', { title: 'Nexus Store - Novo Produto' });
+});
+
+
+
+app.post('/produtos/salvar', async (req, res) => {
+    // pega dados preenchidos
+    const { nome, descricao_produto, id_categoria, preco, quantidade_estoque, url_foto } = req.body;
+
+    try {
+        // sql insert para enviar produto
+        const sql = `
+            INSERT INTO Produto 
+            (nome, descricao_produto, id_categoria, preco, quantidade_estoque, url_foto) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+        
+        const valores = [nome, descricao_produto, id_categoria, preco, quantidade_estoque, url_foto];
+
+        // grava no banco
+        await db.query(sql, valores);
+
+        console.log(`[SUCESSO] Produto "${nome}" cadastrado com sucesso no banco!`);
+        
+        // envia para tela principal
+        res.redirect('/');
+        
+    } catch (erro) {
+        console.error('Erro ao salvar o produto no banco de dados:', erro);
+        res.status(500).send('Erro interno ao salvar o produto. Verifique o console do servidor.');
+    }
 });
 
 app.get('/minha-conta', (req, res) => {
@@ -82,24 +135,22 @@ app.get('/admin/clientes', (req, res) => {
     res.redirect('/minha-conta');
 });
 
-// ===============================================
-// INJEÇÃO DAS TUAS ROTAS DO CARRINHO E PEDIDOS
-// ===============================================
+//rotas do carrino e pedidos 
 app.use('/', pedidosRoutes);
 
-// ROTAS DE PROCESSAMENTO (POST)
+// processando login
 app.post('/auth/login', ClienteController.realizarLogin);
 
 app.post('/auth/cadastro', ClienteController.realizarCadastro);
 
-// Rota de Logout
+// saindo da conta
 app.get('/logout', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/login');
     });
 });
 
-// INICIALIZAÇÃO
+// inciando servidor
 if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`[SERVER] Servidor rodando com sucesso em http://localhost:${PORT}`);
