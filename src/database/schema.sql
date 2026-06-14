@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS Pedido (
     id_cliente INT NOT NULL,
     data_compra DATETIME NOT NULL,
     status_pedido VARCHAR(50) NOT NULL,
+    metodo_pagamento VARCHAR(50) DEFAULT NULL,
     valor_total FLOAT NOT NULL,
     PRIMARY KEY (id_pedido),
     FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)

@@ -14,7 +14,14 @@
                     <div class="p-4 text-center bg-white rounded-top"><img src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400" alt="Smartphone" class="img-fluid rounded" style="max-height: 140px; object-fit: contain;"></div>
                     <div class="card-body p-3 d-flex flex-column text-center border-top bg-white">
                         <h6 class="text-secondary small mb-1">Smartphone Galaxy A54</h6><h5 class="fw-bold text-dark mb-3">R$ 1.999,00</h5>
-                        <button class="btn btn-nexus w-100 py-2 rounded-3 fw-medium mt-auto" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
+                        <form action="/carrinho/adicionar" method="POST" class="mt-auto">
+                            <input type="hidden" name="id_produto" value="1">
+                            <input type="hidden" name="nome" value="Smartphone Galaxy A54">
+                            <input type="hidden" name="preco" value="1999.00">
+                            <input type="hidden" name="url_foto" value="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400">
+                            <input type="hidden" name="quantidade" value="1">
+                            <button type="submit" class="btn btn-nexus w-100 py-2 rounded-3 fw-medium" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -23,7 +30,14 @@
                     <div class="p-4 text-center bg-white rounded-top"><img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400" alt="Notebook" class="img-fluid rounded" style="max-height: 140px; object-fit: contain;"></div>
                     <div class="card-body p-3 d-flex flex-column text-center border-top bg-white">
                         <h6 class="text-secondary small mb-1">Notebook Dell Inspiron</h6><h5 class="fw-bold text-dark mb-3">R$ 3.499,00</h5>
-                        <button class="btn btn-nexus w-100 py-2 rounded-3 fw-medium mt-auto" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
+                        <form action="/carrinho/adicionar" method="POST" class="mt-auto">
+                            <input type="hidden" name="id_produto" value="2">
+                            <input type="hidden" name="nome" value="Notebook Dell Inspiron">
+                            <input type="hidden" name="preco" value="3499.00">
+                            <input type="hidden" name="url_foto" value="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400">
+                            <input type="hidden" name="quantidade" value="1">
+                            <button type="submit" class="btn btn-nexus w-100 py-2 rounded-3 fw-medium" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -32,7 +46,14 @@
                     <div class="p-4 text-center bg-white rounded-top"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" alt="Fone" class="img-fluid rounded" style="max-height: 140px; object-fit: contain;"></div>
                     <div class="card-body p-3 d-flex flex-column text-center border-top bg-white">
                         <h6 class="text-secondary small mb-1">Fone de Ouvido JBL</h6><h5 class="fw-bold text-dark mb-3">R$ 299,90</h5>
-                        <button class="btn btn-nexus w-100 py-2 rounded-3 fw-medium mt-auto" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
+                        <form action="/carrinho/adicionar" method="POST" class="mt-auto">
+                            <input type="hidden" name="id_produto" value="3">
+                            <input type="hidden" name="nome" value="Fone de Ouvido JBL">
+                            <input type="hidden" name="preco" value="299.90">
+                            <input type="hidden" name="url_foto" value="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400">
+                            <input type="hidden" name="quantidade" value="1">
+                            <button type="submit" class="btn btn-nexus w-100 py-2 rounded-3 fw-medium" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
+                        </form>
                     </div>
                 </div>
             </div>

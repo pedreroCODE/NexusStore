@@ -1,16 +1,20 @@
 const bcrypt = require('bcrypt');
 const db = require('../database/conexao'); // Conexão com o banco de dados
 
+function isAdminEmail(email) {
+    return String(email || '').trim().toLowerCase() === 'admin@nexus.local';
+}
+
 const ClienteController = {
 
     // Cria um novo cliente no banco de dados
     realizarCadastro: async (req, res) => {
         // Pega todos os campos preenchidos no formulário HTML
-        const { nome, email, cpf, telefone, cep, rua, numero, bairro, cidade, estado, senha } = req.body;
+        const { nome, email, telefone, cep, rua, numero, bairro, cidade, estado, senha } = req.body;
 
         try {
             // Verifica se o e-mail digitado já existe no sistema
-            const [clienteExistente] = await db.query('SELECT * FROM clientes WHERE email = ?', [email]);
+            const [clienteExistente] = await db.query('SELECT * FROM Cliente WHERE email = ?', [email]);
             if (clienteExistente.length > 0) {
                 console.log("Erro: Este e-mail já está cadastrado.");
                 return res.redirect('/login'); 
@@ -20,8 +24,8 @@ const ClienteController = {
             const senhaCriptografada = await bcrypt.hash(senha, 10);
 
             // Comando SQL para inserir os dados na tabela de clientes
-            const sql = `INSERT INTO clientes (nome, email, cpf, telefone, cep, rua, numero, bairro, cidade, estado, senha) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            const valores = [nome, email, cpf, telefone, cep, rua, numero, bairro, cidade, estado, senhaCriptografada];
+            const sql = `INSERT INTO Cliente (nome, email, senha, telefone, cep, rua, numero, bairro, cidade, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            const valores = [nome, email, senhaCriptografada, telefone, cep, rua, numero, bairro, cidade, estado];
             
             // Executa a gravação no banco de dados
             await db.query(sql, valores);
@@ -42,7 +46,7 @@ const ClienteController = {
 
         try {
             // Busca o usuário pelo e-mail
-            const [clientes] = await db.query('SELECT * FROM clientes WHERE email = ?', [email]);
+            const [clientes] = await db.query('SELECT * FROM Cliente WHERE email = ?', [email]);
             if (clientes.length === 0) {
                 console.log("Erro: Usuário não encontrado.");
                 return res.redirect('/login');
@@ -59,10 +63,10 @@ const ClienteController = {
 
             // Se tudo estiver certo, cria a sessão do usuário conectado
             req.session.usuario = {
-                id: cliente.id,
+                id_cliente: cliente.id_cliente,
                 nome: cliente.nome,
                 email: cliente.email,
-                isAdmin: false
+                isAdmin: isAdminEmail(cliente.email)
             };
 
             res.redirect('/');

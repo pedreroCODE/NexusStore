@@ -29,7 +29,7 @@
         </div>
 
         <ul class="nav flex-column flex-grow-1 gap-1">
-            <% if (typeof usuarioLogado !== 'undefined' && usuarioLogado.isAdmin) { %>
+            <% if (usuarioLogado && usuarioLogado.isAdmin) { %>
                 <li><a href="/" class="nav-link-nexus">Início</a></li>
                 <li><a href="/produtos" class="nav-link-nexus">Produto</a></li>
                 <li><a href="/categorias" class="nav-link-nexus">Categoria</a></li>
@@ -53,12 +53,12 @@
         <header class="bg-nexus-sidebar border-bottom border-secondary border-opacity-20 py-3 px-4 shadow-sm">
             <div id="headerContainer" class="d-flex justify-content-end align-items-center">
                 <div class="d-flex align-items-center gap-3">
-                    <span class="text-white opacity-75 small">Olá, <strong class="text-white">João</strong></span>
+                    <span class="text-white opacity-75 small">Olá, <strong class="text-white"><%= usuarioLogado && usuarioLogado.nome ? usuarioLogado.nome : 'Visitante' %></strong></span>
                     <a href="/carrinho" class="position-relative text-white opacity-75 link-light">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
                             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                         </svg>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 0.6rem; padding: 0.25rem 0.4rem;">2</span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 0.6rem; padding: 0.25rem 0.4rem;"><%= totalCarrinho || 0 %></span>
                     </a>
                 </div>
             </div>

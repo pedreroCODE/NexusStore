@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4 fw-bold">Categorias</h2>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3 px-4">ID</th>
+                            <th class="py-3">Nome</th>
+                            <th class="py-3">Descrição</th>
+                            <th class="py-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (categorias && categorias.length > 0) { %>
+                            <% categorias.forEach(categoria => { %>
+                                <tr>
+                                    <td class="px-4 py-3 fw-bold">#<%= categoria.id_categoria %></td>
+                                    <td class="py-3"><%= categoria.nome %></td>
+                                    <td class="py-3 text-muted"><%= categoria.descricao_categoria || '-' %></td>
+                                    <td class="py-3">
+                                        <span class="badge <%= categoria.status ? 'bg-success' : 'bg-secondary' %>"><%= categoria.status ? 'Ativa' : 'Inativa' %></span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Nenhuma categoria encontrada.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

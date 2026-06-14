@@ -4,6 +4,11 @@
     <!-- Tabela de Produtos -->
     <div class="col-lg-8">
         <h2 class="mb-4 fw-bold">Meu Carrinho</h2>
+        <% if (erroCarrinho) { %>
+            <div class="alert alert-danger border-0 shadow-sm mb-4" role="alert">
+                <strong>Não foi possível finalizar o pedido:</strong> <%= erroCarrinho %>
+            </div>
+        <% } %>
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body p-0">
                 <table class="table table-hover mb-0 align-middle">
@@ -28,9 +33,9 @@
                                     <td class="py-3">R$ <%= item.preco.toFixed(2).replace('.', ',') %></td>
                                     <td class="py-3 text-center">
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <button type="button" class="btn btn-outline-secondary">-</button>
+                                            <a href="/carrinho/diminuir/<%= item.id_produto %>" class="btn btn-outline-secondary">-</a>
                                             <button type="button" class="btn btn-outline-secondary" disabled><%= item.quantidade_comprada %></button>
-                                            <button type="button" class="btn btn-outline-secondary">+</button>
+                                            <a href="/carrinho/aumentar/<%= item.id_produto %>" class="btn btn-outline-secondary">+</a>
                                         </div>
                                     </td>
                                     <td class="py-3 fw-bold">R$ <%= (item.preco * item.quantidade_comprada).toFixed(2).replace('.', ',') %></td>
@@ -63,11 +68,12 @@
                 <span class="text-muted">Total da Compra:</span>
                 <h3 class="fw-bold text-success mb-0">R$ <%= valorTotal || '0,00' %></h3>
             </div>
-            <form action="/pedidos/finalizar" method="POST">
-                <button type="submit" class="btn btn-success w-100 py-3 rounded-3" style="background-color: #198754;">
-                    <i class="bi bi-lock-fill"></i> Finalizar Pedido
-                </button>
-            </form>
+            <a href="/pagamento" class="btn btn-success w-100 py-3 rounded-3" style="background-color: #198754;">
+                <i class="bi bi-credit-card"></i> Ir para Pagamento
+            </a>
+            <a href="/carrinho/limpar" class="btn btn-outline-danger w-100 mt-2 py-3 rounded-3">
+                <i class="bi bi-trash"></i> Esvaziar Carrinho
+            </a>
         </div>
     </div>
 </div>

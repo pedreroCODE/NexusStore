@@ -1,0 +1,248 @@
+<%- include('../partials/header') %>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">Pagamento</h2>
+                    <p class="text-muted mb-0">Etapa visual de confirmação antes de aprovar a compra.</p>
+                </div>
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Simulação visual</span>
+            </div>
+
+            <div class="row g-3 mb-4" id="paymentMethods">
+                <div class="col-md-4">
+                    <button type="button" class="btn payment-method w-100 p-3 text-start border <%= metodoSelecionado === 'cartao' ? 'border-success bg-success bg-opacity-10 is-selected' : 'border-light' %>" data-method="cartao">
+                        <div class="fw-bold">Cartão de crédito</div>
+                        <small class="text-muted">Aprovação imediata</small>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn payment-method w-100 p-3 text-start border <%= metodoSelecionado === 'pix' ? 'border-success bg-success bg-opacity-10 is-selected' : 'border-light' %>" data-method="pix">
+                        <div class="fw-bold">PIX</div>
+                        <small class="text-muted">Confirmado em segundos</small>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn payment-method w-100 p-3 text-start border <%= metodoSelecionado === 'boleto' ? 'border-success bg-success bg-opacity-10 is-selected' : 'border-light' %>" data-method="boleto">
+                        <div class="fw-bold">Boleto</div>
+                        <small class="text-muted">Compensação posterior</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <div class="border rounded-3 p-3 h-100 bg-light">
+                        <h5 class="fw-bold mb-3">Dados simulados</h5>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label small text-muted mb-1">Nome no cartão</label>
+                                <input type="text" name="nome_cartao" class="form-control" value="<%= usuarioLogado && usuarioLogado.nome ? usuarioLogado.nome : 'Cliente' %>">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small text-muted mb-1">Número do cartão</label>
+                                <input type="text" name="numero_cartao" class="form-control" value="4242 4242 4242 4242">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted mb-1">Validade</label>
+                                <input type="text" name="validade" class="form-control" value="12/28">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted mb-1">CVV</label>
+                                <input type="text" name="cvv" class="form-control" value="123">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="border rounded-3 p-3 h-100 bg-white">
+                        <h5 class="fw-bold mb-3">Resumo</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Itens</span>
+                            <strong><%= totalItens %></strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Método</span>
+                            <strong class="text-uppercase"><%= metodoSelecionado %></strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">Total</span>
+                            <strong class="text-success fs-5">R$ <%= valorTotal %></strong>
+                        </div>
+                        <p class="small text-muted mb-0">Nenhum valor será cobrado nesta etapa. Esta página apenas simula a aprovação antes do pedido ser gravado no banco.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 p-4 mb-4">
+            <h4 class="fw-bold mb-3">Produtos no pedido</h4>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Produto</th>
+                            <th class="text-center">Qtd</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% carrinho.forEach(item => { %>
+                            <tr>
+                                <td class="fw-semibold"><%= item.nome %></td>
+                                <td class="text-center"><%= item.quantidade_comprada %></td>
+                                <td class="text-end">R$ <%= (item.preco * item.quantidade_comprada).toFixed(2).replace('.', ',') %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="pixArea" class="card shadow-sm border-0 p-4 mb-4 d-none">
+            <h5 class="fw-bold mb-3">PIX - Pagamento (simulado)</h5>
+            <div class="text-center mb-3">
+                <canvas id="pixQr" width="240" height="240" style="max-width:100%; border:1px solid #eee; background:#fff"></canvas>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="small text-muted">Chave PIX</div>
+                    <div id="pixKey" class="fw-bold">00000000-0000-0000-0000-000000000000</div>
+                </div>
+                <div>
+                    <button type="button" id="copyPix" class="btn btn-outline-secondary btn-sm">Copiar chave</button>
+                    <button type="button" id="regeneratePix" class="btn btn-link btn-sm">Regenerar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 p-4">
+            <form action="/pagamento/aprovar" method="POST" class="d-grid gap-2">
+                <input type="hidden" name="metodo" id="metodoPagamento" value="<%= metodoSelecionado %>">
+                <button type="submit" class="btn btn-success py-3 rounded-3" style="background-color: #198754;">
+                    <i class="bi bi-check2-circle"></i> Aprovar e Finalizar Compra
+                </button>
+                <a href="/carrinho" class="btn btn-outline-secondary py-3 rounded-3">
+                    Voltar ao carrinho
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        const hiddenMethodInput = document.getElementById('metodoPagamento');
+        const pixArea = document.getElementById('pixArea');
+        const pixCanvas = document.getElementById('pixQr');
+        const pixKeyEl = document.getElementById('pixKey');
+        const copyPixBtn = document.getElementById('copyPix');
+        const regeneratePixBtn = document.getElementById('regeneratePix');
+
+        function selectMethod(method) {
+            if (!hiddenMethodInput) {
+                return;
+            }
+
+            hiddenMethodInput.value = method;
+
+            if (method === 'pix') {
+                if (pixArea) pixArea.classList.remove('d-none');
+                ensurePixGenerated();
+            } else {
+                if (pixArea) pixArea.classList.add('d-none');
+            }
+
+            paymentMethods.forEach((button) => {
+                const isActive = button.dataset.method === method;
+                button.classList.toggle('border-success', isActive);
+                button.classList.toggle('bg-success', isActive);
+                button.classList.toggle('bg-opacity-10', isActive);
+                button.classList.toggle('is-selected', isActive);
+                button.classList.toggle('border-light', !isActive);
+            });
+        }
+
+        paymentMethods.forEach((button) => {
+            button.addEventListener('click', () => selectMethod(button.dataset.method));
+        });
+
+        function hashString(s) {
+            let h = 2166136261 >>> 0;
+            for (let i = 0; i < s.length; i++) {
+                h ^= s.charCodeAt(i);
+                h = Math.imul(h, 16777619) >>> 0;
+            }
+            return h >>> 0;
+        }
+
+        function drawFakeQr(canvas, seed) {
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const size = Math.max(21, 21);
+            const module = Math.floor(canvas.width / size);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let s = seed;
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    s = (s * 1664525 + 1013904223) >>> 0;
+                    const bit = (s >>> 16) & 1;
+                    ctx.fillStyle = bit ? '#000' : '#fff';
+                    ctx.fillRect(x * module, y * module, module, module);
+                }
+            }
+        }
+
+        function generatePixKey() {
+            const rnd = Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, '0');
+            const now = Date.now().toString(16);
+            return `${rnd}-${now}`;
+        }
+
+        function ensurePixGenerated() {
+            if (!pixKeyEl || !pixCanvas) return;
+            if (!pixKeyEl.dataset.value || pixKeyEl.dataset.value === '') {
+                pixKeyEl.dataset.value = generatePixKey();
+            }
+            pixKeyEl.textContent = pixKeyEl.dataset.value;
+            drawFakeQr(pixCanvas, hashString(pixKeyEl.dataset.value + '<%= valorTotal %>'));
+        }
+
+        if (copyPixBtn) {
+            copyPixBtn.addEventListener('click', () => {
+                const key = pixKeyEl && pixKeyEl.dataset.value ? pixKeyEl.dataset.value : pixKeyEl.textContent;
+                if (navigator.clipboard && key) {
+                    navigator.clipboard.writeText(key).then(() => {
+                        copyPixBtn.textContent = 'Copiado';
+                        setTimeout(() => (copyPixBtn.textContent = 'Copiar chave'), 1500);
+                    }).catch(() => {});
+                }
+            });
+        }
+
+        if (regeneratePixBtn) {
+            regeneratePixBtn.addEventListener('click', () => {
+                if (!pixKeyEl) return;
+                pixKeyEl.dataset.value = generatePixKey();
+                pixKeyEl.textContent = pixKeyEl.dataset.value;
+                drawFakeQr(pixCanvas, hashString(pixKeyEl.dataset.value + '<%= valorTotal %>'));
+            });
+        }
+
+        // Initialize view according to server-selected method
+        (function init() {
+            const initial = '<%= metodoSelecionado %>' || 'cartao';
+            selectMethod(initial);
+        })();
+    })();
+</script>
+
+<%- include('../partials/footer') %>
