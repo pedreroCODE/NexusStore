@@ -6,60 +6,58 @@
             <a href="#" class="list-group-item list-group-item-action border-0 py-2 fs-6 fw-medium bg-white text-success border-start border-success border-3">Eletrônicos</a>
         </div>
     </div>
+
     <div class="col-md-10">
         <h4 class="fw-bold text-dark mb-4">Destaques</h4>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <div class="col">
-                <div class="card h-100 card-product bg-white">
-                    <div class="p-4 text-center bg-white rounded-top"><img src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400" alt="Smartphone" class="img-fluid rounded" style="max-height: 140px; object-fit: contain;"></div>
-                    <div class="card-body p-3 d-flex flex-column text-center border-top bg-white">
-                        <h6 class="text-secondary small mb-1">Smartphone Galaxy A54</h6><h5 class="fw-bold text-dark mb-3">R$ 1.999,00</h5>
-                        <form action="/carrinho/adicionar" method="POST" class="mt-auto">
-                            <input type="hidden" name="id_produto" value="1">
-                            <input type="hidden" name="nome" value="Smartphone Galaxy A54">
-                            <input type="hidden" name="preco" value="1999.00">
-                            <input type="hidden" name="url_foto" value="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400">
-                            <input type="hidden" name="quantidade" value="1">
-                            <button type="submit" class="btn btn-nexus w-100 py-2 rounded-3 fw-medium" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
-                        </form>
+            
+            <% if (typeof produtos !== 'undefined' && produtos.length > 0) { %>
+                <% produtos.forEach(produto => { %>
+                    <div class="col">
+                        <div class="card h-100 card-product bg-white">
+                            <div class="p-4 text-center bg-white rounded-top">
+                                <img src="<%= produto.url_foto || 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=400' %>" 
+                                     alt="<%= produto.nome %>" 
+                                     class="img-fluid rounded" 
+                                     style="max-height: 140px; object-fit: contain;">
+                            </div>
+                            
+                            <div class="card-body p-3 d-flex flex-column text-center border-top bg-white">
+                                <h6 class="text-secondary small mb-1"><%= produto.nome %></h6>
+                                <h5 class="fw-bold text-dark mb-3">R$ <%= Number(produto.preco).toFixed(2).replace('.', ',') %></h5>
+                                
+                                <form action="/carrinho/adicionar" method="POST" class="mt-auto">
+                                    <input type="hidden" name="id_produto" value="<%= produto.id_produto %>">
+                                    <input type="hidden" name="nome" value="<%= produto.nome %>">
+                                    <input type="hidden" name="preco" value="<%= produto.preco %>">
+                                    <input type="hidden" name="url_foto" value="<%= produto.url_foto || '' %>">
+                                    <input type="hidden" name="quantidade" value="1">
+                                    
+                                    <% if (produto.quantidade_estoque > 0) { %>
+                                        <button type="submit" class="btn btn-nexus w-100 py-2 rounded-3 fw-medium" style="font-size: 0.85rem;">
+                                            <i class="bi bi-cart-plus"></i> Adicionar ao Carrinho
+                                        </button>
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-secondary w-100 py-2 rounded-3 fw-medium" style="font-size: 0.85rem;" disabled>
+                                            Esgotado
+                                        </button>
+                                    <% } %>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+                <% }) %>
+            <% } else { %>
+                <div class="col-12 text-center py-5 text-muted">
+                    <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
+                    <p>Nenhum produto cadastrado ou disponível no estoque no momento.</p>
                 </div>
-            </div>
-            <div class="col">
-                <div class="card h-100 card-product bg-white">
-                    <div class="p-4 text-center bg-white rounded-top"><img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400" alt="Notebook" class="img-fluid rounded" style="max-height: 140px; object-fit: contain;"></div>
-                    <div class="card-body p-3 d-flex flex-column text-center border-top bg-white">
-                        <h6 class="text-secondary small mb-1">Notebook Dell Inspiron</h6><h5 class="fw-bold text-dark mb-3">R$ 3.499,00</h5>
-                        <form action="/carrinho/adicionar" method="POST" class="mt-auto">
-                            <input type="hidden" name="id_produto" value="2">
-                            <input type="hidden" name="nome" value="Notebook Dell Inspiron">
-                            <input type="hidden" name="preco" value="3499.00">
-                            <input type="hidden" name="url_foto" value="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400">
-                            <input type="hidden" name="quantidade" value="1">
-                            <button type="submit" class="btn btn-nexus w-100 py-2 rounded-3 fw-medium" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card h-100 card-product bg-white">
-                    <div class="p-4 text-center bg-white rounded-top"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" alt="Fone" class="img-fluid rounded" style="max-height: 140px; object-fit: contain;"></div>
-                    <div class="card-body p-3 d-flex flex-column text-center border-top bg-white">
-                        <h6 class="text-secondary small mb-1">Fone de Ouvido JBL</h6><h5 class="fw-bold text-dark mb-3">R$ 299,90</h5>
-                        <form action="/carrinho/adicionar" method="POST" class="mt-auto">
-                            <input type="hidden" name="id_produto" value="3">
-                            <input type="hidden" name="nome" value="Fone de Ouvido JBL">
-                            <input type="hidden" name="preco" value="299.90">
-                            <input type="hidden" name="url_foto" value="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400">
-                            <input type="hidden" name="quantidade" value="1">
-                            <button type="submit" class="btn btn-nexus w-100 py-2 rounded-3 fw-medium" style="font-size: 0.85rem;"><i class="bi bi-cart-plus"></i> Adicionar ao Carrinho</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <% } %>
+
         </div>
     </div>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const container = document.getElementById("headerContainer");
