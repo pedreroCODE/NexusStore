@@ -2,7 +2,13 @@
 
 <div class="row">
     <div class="col-12">
-        <h2 class="mb-4 fw-bold">Categorias</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Categorias</h2>
+            <a href="/categorias/nova" class="btn btn-success rounded-3 px-4">
+                <i class="bi bi-plus-circle"></i> Criar Categoria
+            </a>
+        </div>
+
         <div class="card shadow-sm border-0">
             <div class="card-body p-0">
                 <table class="table table-hover mb-0 align-middle">
@@ -12,6 +18,7 @@
                             <th class="py-3">Nome</th>
                             <th class="py-3">Descrição</th>
                             <th class="py-3">Status</th>
+                            <th class="py-3 text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,11 +31,22 @@
                                     <td class="py-3">
                                         <span class="badge <%= categoria.status ? 'bg-success' : 'bg-secondary' %>"><%= categoria.status ? 'Ativa' : 'Inativa' %></span>
                                     </td>
+                                    <td class="py-3 text-center">
+                                        <a href="/categorias/nova?id=<%= categoria.id_categoria %>" class="btn btn-sm btn-outline-primary" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        
+                                        <form action="/categorias/excluir/<%= categoria.id_categoria %>" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                             <% }) %>
                         <% } else { %>
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">Nenhuma categoria encontrada.</td>
+                                <td colspan="5" class="text-center py-4 text-muted">Nenhuma categoria encontrada.</td>
                             </tr>
                         <% } %>
                     </tbody>

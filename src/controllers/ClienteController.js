@@ -74,6 +74,93 @@ const ClienteController = {
             console.error("Erro ao realizar login:", erro);
             res.redirect('/login');
         }
+    },
+
+    // ==========================================
+    // ÁREA DO ADMINISTRADOR (GESTÃO DE CLIENTES)
+    // ==========================================
+
+    // 1. Listar todos os clientes no painel do administrador
+    listarClientes: async (req, res) => {
+        try {
+            // Busca os dados dos clientes em ordem de cadastro mais recente
+            const [clientesDoBanco] = await db.query(
+                'SELECT id_cliente, nome, email, telefone, cidade, estado FROM Cliente ORDER BY id_cliente DESC'
+            );
+            
+            res.render('clientes/listar', {
+                title: 'Nexus Store - Gestão de Clientes',
+                clientes: clientesDoBanco
+            });
+        } catch (erro) {
+            console.error('Erro ao listar clientes no painel admin:', erro);
+            res.redirect('/');
+        }
+    },
+
+    // 2. Carregar a tela de edição de um cliente específico com os dados dele
+    exibirEditarCliente: async (req, res) => {
+        try {
+            const id = req.params.id;
+            const [clienteDoBanco] = await db.query('SELECT * FROM Cliente WHERE id_cliente = ?', [id]);
+            
+            // Se o cliente não existir, joga de volta para a listagem
+            if (clienteDoBanco.length === 0) return res.redirect('/admin/clientes');
+
+            res.render('clientes/editar', {
+                title: 'Nexus Store - Editar Cliente',
+                cliente: clienteDoBanco[0]
+            });
+        } catch (erro) {
+            console.error('Erro ao abrir formulário de edição de cliente:', erro);
+            res.redirect('/admin/clientes');
+        }
+    },
+
+    // 3. Salvar as alterações cadastrais feitas pelo administrador
+    salvarEdicaoCliente: async (req, res) => {
+        const { id_cliente, nome, email, telefone, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
+        
+        try {
+            const sql = `
+                UPDATE Cliente SET 
+                nome = ?, email = ?, telefone = ?, cpf = ?, cep = ?, rua = ?, numero = ?, bairro = ?, cidade = ?, estado = ?
+                WHERE id_cliente = ?
+            `;
+            const valores = [nome, email, telefone, cpf, cep, rua, numero, bairro, cidade, estado, id_cliente];
+            
+            await db.query(sql, valores);
+            console.log(`[SUCESSO] Cadastro do cliente ID #${id_cliente} atualizado pelo Administrador.`);
+            
+            res.redirect('/admin/clientes');
+        } catch (erro) {
+            console.error('Erro ao salvar as modificações do cliente:', erro);
+            res.redirect('/admin/clientes');
+        }
+    },
+
+    // 4. Excluir um cliente pelo painel administrativo
+    excluirCliente: async (req, res) => {
+        try {
+            const id = req.params.id;
+            
+            // Busca o e-mail para impedir que o Administrador delete a si mesmo por acidente
+            const [cliente] = await db.query('SELECT email FROM Cliente WHERE id_cliente = ?', [id]);
+            
+            if (cliente.length > 0 && isAdminEmail(cliente[0].email)) {
+                return res.send("<script>alert('Operação negada! Você não pode excluir a conta master do administrador.'); window.location.href='/admin/clientes';</script>");
+            }
+
+            // Deleta o usuário do banco
+            await db.query('DELETE FROM Cliente WHERE id_cliente = ?', [id]);
+            console.log(`[SUCESSO] Cliente ID #${id} foi removido do sistema.`);
+            
+            res.redirect('/admin/clientes');
+        } catch (erro) {
+            console.error('Erro ao excluir cliente:', erro);
+            // Alerta caso o cliente tenha chaves estrangeiras travando no banco (como pedidos feitos)
+            res.send("<script>alert('Não foi possível excluir o cliente. Verifique se ele possui pedidos ativos vinculados no histórico.'); window.location.href='/admin/clientes';</script>");
+        }
     }
 };
 

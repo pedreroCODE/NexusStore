@@ -24,29 +24,37 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="font-size: 0.9rem;">
-                    <td class="fw-bold text-secondary">1</td>
-                    <td class="text-dark fw-medium">Smartphone Galaxy A54</td>
-                    <td class="text-secondary">Eletrônicos</td>
-                    <td class="fw-bold">1.900,00</td>
-                    <td>
-                        <span class="badge bg-success bg-opacity-10 text-success px-2.5 py-1.5 rounded">
-                            15 unidades
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <div class="d-flex justify-content-center gap-1">
-                            <a href="/produtos/editar/1" class="btn btn-sm btn-success p-1 px-2" style="background-color: #0c572e; border: none;">
-                                <i class="bi bi-pencil-fill" style="font-size: 0.8rem; color: #fff;"></i>
-                            </a>
-                            <form action="/produtos/deletar/1" method="POST" onsubmit="return confirm('Deseja realmente excluir este produto?')" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-danger p-1 px-2">
-                                    <i class="bi bi-trash-fill" style="font-size: 0.8rem;"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
+                <% if (typeof produtos !== 'undefined' && produtos.length > 0) { %>
+                    <% produtos.forEach(produto => { %>
+                        <tr style="font-size: 0.9rem;">
+                            <td class="fw-bold text-secondary">#<%= produto.id_produto %></td>
+                            <td class="text-dark fw-medium"><%= produto.nome %></td>
+                            <td class="text-secondary"><%= produto.categoria_nome || 'Sem Categoria' %></td>
+                            <td class="fw-bold"><%= Number(produto.preco).toFixed(2).replace('.', ',') %></td>
+                            <td>
+                                <span class="badge <%= produto.quantidade_estoque > 0 ? 'bg-success text-success' : 'bg-danger text-danger' %> bg-opacity-10 px-2.5 py-1.5 rounded">
+                                    <%= produto.quantidade_estoque %> unidades
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a href="/produtos/editar/<%= produto.id_produto %>" class="btn btn-sm btn-success p-1 px-2" style="background-color: #0c572e; border: none;" title="Editar">
+                                        <i class="bi bi-pencil-fill" style="font-size: 0.8rem; color: #fff;"></i>
+                                    </a>
+                                    <form action="/produtos/excluir/<%= produto.id_produto %>" method="POST" onsubmit="return confirm('Deseja realmente excluir este produto?')" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-danger p-1 px-2" title="Excluir">
+                                            <i class="bi bi-trash-fill" style="font-size: 0.8rem;"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">Nenhum produto cadastrado no momento.</td>
+                    </tr>
+                <% } %>
             </tbody>
         </table>
     </div>

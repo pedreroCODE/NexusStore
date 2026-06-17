@@ -1,0 +1,67 @@
+<%- include('../partials/header') %>
+
+<div class="bg-white p-4 rounded-3 shadow-sm border mx-auto" style="max-width: 850px;">
+    <h4 class="fw-bold text-dark mb-1">Painel Admin - Editar Cliente</h4>
+    <p class="text-muted small mb-4">Modifique as informações cadastrais do usuário #<%= cliente.id_cliente %>.</p>
+
+    <form action="/admin/clientes/salvar" method="POST">
+        <input type="hidden" name="id_cliente" value="<%= cliente.id_cliente %>">
+        
+        <h6 class="text-success fw-bold small text-uppercase mb-3">Dados Pessoais</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label class="form-label small">Nome Completo</label>
+                <input type="text" class="form-control" name="nome" value="<%= cliente.nome %>" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small">E-mail</label>
+                <input type="email" class="form-control" name="email" value="<%= cliente.email %>" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small">Telefone</label>
+                <input type="text" class="form-control" name="telefone" value="<%= cliente.telefone || '' %>" placeholder="(00) 00000-0000">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small">CPF</label>
+                <input type="text" class="form-control" name="cpf" value="<%= cliente.cpf || '' %>" placeholder="000.000.000-00">
+            </div>
+        </div>
+
+        <h6 class="text-success fw-bold small text-uppercase mb-3">Endereço de Entrega</h6>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label small">CEP</label>
+                <input type="text" class="form-control" name="cep" value="<%= cliente.cep || '' %>" placeholder="00000-000">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small">Rua / Logradouro</label>
+                <input type="text" class="form-control" name="rua" value="<%= cliente.rua || '' %>" placeholder="Avenida Principal">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Número</label>
+                <input type="text" class="form-control" name="numero" value="<%= cliente.numero || '' %>" placeholder="100">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small">Bairro</label>
+                <input type="text" class="form-control" name="bairro" value="<%= cliente.bairro || '' %>" placeholder="Centro">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small">Cidade</label>
+                <input type="text" class="form-control" name="city = cidade" value="<%= cliente.cidade || '' %>" placeholder="Londrina">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small">Estado (UF)</label>
+                <input type="text" class="form-control" name="estado" value="<%= cliente.estado || '' %>" placeholder="PR" maxlength="2">
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4 border-top pt-3">
+            <a href="/admin/clientes" class="btn btn-outline-secondary px-4 py-2 me-2">Cancelar</a>
+            <button type="submit" class="btn btn-success px-4 py-2 fw-semibold" style="background-color: #0c572e; border: none;">
+                <i class="bi bi-check-circle me-2"></i> Salvar Alterações
+            </button>
+        </div>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

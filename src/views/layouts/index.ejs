@@ -3,7 +3,18 @@
     <div class="col-md-2">
         <h5 class="fw-bold text-muted small text-uppercase mb-3" style="letter-spacing: 1px;">Categorias</h5>
         <div class="list-group list-group-flush shadow-sm rounded-3 overflow-hidden border">
-            <a href="#" class="list-group-item list-group-item-action border-0 py-2 fs-6 fw-medium bg-white text-success border-start border-success border-3">Eletrônicos</a>
+            <a href="/" class="list-group-item list-group-item-action border-0 py-2 fs-6 fw-medium <%= !categoriaAtual ? 'bg-white text-success border-start border-success border-3' : 'text-dark bg-light' %>">
+                Todas
+            </a>
+            
+            <% if (typeof categorias !== 'undefined' && categorias.length > 0) { %>
+                <% categorias.forEach(cat => { %>
+                    <a href="/?categoria=<%= cat.id_categoria %>" 
+                       class="list-group-item list-group-item-action border-0 py-2 fs-6 fw-medium <%= categoriaAtual == cat.id_categoria ? 'bg-white text-success border-start border-success border-3' : 'text-dark bg-light' %>">
+                        <%= cat.nome %>
+                    </a>
+                <% }) %>
+            <% } %>
         </div>
     </div>
 

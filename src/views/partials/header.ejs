@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <style>
         .bg-nexus-sidebar { background-color: #0b4625 !important; }
         .text-nexus-light { color: #8cd19d !important; }
@@ -35,6 +38,7 @@
                 <li><a href="/categorias" class="nav-link-nexus">Categoria</a></li>
                 <li><a href="/admin/pedidos" class="nav-link-nexus">Pedidos</a></li>
                 <li><a href="/admin/clientes" class="nav-link-nexus">Clientes</a></li>
+                <li><a href="/minha-conta" class="nav-link-nexus">Minha Conta</a></li>
             <% } else { %>
                 <li><a href="/" class="nav-link-nexus">Início</a></li>
                 <li><a href="/pedidos" class="nav-link-nexus">Meus Pedidos</a></li>
@@ -44,8 +48,7 @@
         </ul>
 
         <div class="pt-3 border-top border-secondary border-opacity-20">
-            <a href="/login" class="nav-link-nexus text-danger opacity-75"><i class="bi bi-box-arrow-left"></i> Sair</a>
-
+            <a href="/logout" class="nav-link-nexus text-danger opacity-75"><i class="bi bi-box-arrow-left"></i> Sair</a>
         </div>
     </div>
 
@@ -58,7 +61,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
                             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                         </svg>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 0.6rem; padding: 0.25rem 0.4rem;"><%= totalCarrinho || 0 %></span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 0.6rem; padding: 0.25rem 0.4rem;"><%= typeof totalCarrinho !== 'undefined' ? totalCarrinho : 0 %></span>
                     </a>
                 </div>
             </div>
