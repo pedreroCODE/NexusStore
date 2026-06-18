@@ -27,7 +27,7 @@ app.use(session({
     cookie: { secure: false } 
 }));
 
-// Middleware Global para disponibilizar variáveis nas telas (EJS)
+// Middleware Global (Configura variáveis para o EJS)
 app.use((req, res, next) => {
     res.locals.usuarioLogado = req.session.usuario || null;
     res.locals.currentPath = req.path;
@@ -38,6 +38,21 @@ app.use((req, res, next) => {
     next();
 });
 
+
+const verificarAutenticacao = (req, res, next) => {
+    const rotasPublicas = ['/login', '/auth/login', '/auth/cadastro', '/cadastro'];
+    
+    if (req.session.usuario || rotasPublicas.includes(req.path)) {
+        return next();
+    }
+    
+    // Se não está logado e tentou acessar uma rota restrita, vai direto pro login
+    res.redirect('/login');
+};
+
+// Aplica a trava de segurança em todas as rotas do site
+app.use(verificarAutenticacao);
+
 // ==========================================
 // ROTA PRINCIPAL (HOME)
 // ==========================================
@@ -45,7 +60,6 @@ app.get('/', async (req, res) => {
     try {
         const categoriaFiltro = req.query.categoria; 
         
-        // CORRIGIDO: Removido o erro de digitação da coluna do banco
         let queryProdutos = 'SELECT id_produto, nome, preco, url_foto, quantidade_estoque, descricao_produto FROM Produto WHERE quantidade_estoque > 0';
         let paramsProdutos = [];
 
@@ -62,7 +76,7 @@ app.get('/', async (req, res) => {
         res.render('layouts/index', { 
             title: 'Nexus Store - Home',
             produtos: produtos,
-            categorias: categorias, // CORRIGIDO: Removido o bug visual
+            categorias: categorias,
             categoriaAtual: categoriaFiltro || null 
         });
     } catch (erro) {
@@ -76,9 +90,31 @@ app.get('/', async (req, res) => {
     }
 });
 
-// ==========================================
-// ROTAS DE PRODUTOS (CRUD COMPLETO)
-// ==========================================
+
+app.get('/minha-conta', async (req, res) => {
+    try {
+        // Pega o ID do usuário que está logado na sessão atual
+        const idClienteLogado = req.session.usuario.id_cliente;
+
+        // Busca todas as colunas desse cliente específico direto no banco
+        const [dadosDoCliente] = await db.query('SELECT * FROM Cliente WHERE id_cliente = ?', [idClienteLogado]);
+
+        if (dadosDoCliente.length === 0) {
+            return res.redirect('/logout');
+        }
+
+        // Renderiza a tela enviando os dados reais e completos vindos do banco
+        res.render('minhaconta', { 
+            title: 'Nexus Store - Minha Conta', 
+            cliente: dadosDoCliente[0] 
+        });
+    } catch (erro) {
+        console.error('Erro ao buscar dados da Minha Conta:', erro);
+        res.redirect('/');
+    }
+});
+
+
 app.get('/produtos', async (req, res) => {
     try {
         const query = `
@@ -98,7 +134,6 @@ app.get('/produtos', async (req, res) => {
 app.get('/produtos/novo', async (req, res) => {
     try {
         const [categoriasDoBanco] = await db.query('SELECT id_categoria, nome FROM Categoria WHERE status = 1');
-        // CORRIGIDO: Removido bug visual "Pattern ="
         res.render('produtos/cadastro', { title: 'Nexus Store - Novo Produto', categorias: categoriasDoBanco, produto: null });
     } catch (erro) {
         console.error('Erro na rota /produtos/novo:', erro);
@@ -124,7 +159,6 @@ app.post('/produtos/salvar', async (req, res) => {
     try {
         if (id_produto) {
             const sql = `UPDATE Produto SET nome=?, descricao_produto=?, id_categoria=?, preco=?, quantidade_estoque=?, url_foto=? WHERE id_produto=?`;
-            // CORRIGIDO: Removido o "pattern =" de dentro do array
             await db.query(sql, [nome, descricao_produto, id_categoria, preco, quantidade_estoque, url_foto, id_produto]);
         } else {
             const sql = `INSERT INTO Produto (nome, descricao_produto, id_categoria, preco, quantidade_estoque, url_foto) VALUES (?, ?, ?, ?, ?, ?)`;
@@ -143,21 +177,12 @@ app.post('/produtos/excluir/:id', async (req, res) => {
         await db.query('DELETE FROM Produto WHERE id_produto = ?', [id]);
         res.redirect('/produtos');
     } catch (erro) {
-        console.error('Erro ao excluir produto:', erro.message);
-        
-        // Verifica se o erro foi causado pela trava de segurança do banco (Foreign Key)
-        if (erro.errno === 1451) {
-            return res.send("<script>alert('AÇÃO BLOQUEADA: Você não pode excluir este produto porque ele já faz parte do histórico de pedidos de algum cliente. Tente zerar o estoque dele em vez de excluí-lo.'); window.location.href='/produtos';</script>");
-        }
-        
-        // Se for outro erro qualquer
-        res.send("<script>alert('Ocorreu um erro ao tentar excluir o produto.'); window.location.href='/produtos';</script>");
+        console.error('Erro ao excluir produto:', erro);
+        res.redirect('/produtos');
     }
 });
 
-// ==========================================
-// ROTAS DE CATEGORIAS (CRUD COMPLETO)
-// ==========================================
+
 app.get('/categorias', async (req, res) => {
     try {
         const [categorias] = await db.query('SELECT id_categoria, nome, descricao_categoria, status FROM Categoria ORDER BY nome ASC');
@@ -172,19 +197,13 @@ app.get('/categorias/nova', CategoriaController.exibirCadastro);
 app.post('/categorias/salvar', CategoriaController.salvarCategoria);
 app.post('/categorias/excluir/:id', CategoriaController.excluirCategoria);
 
-// ==========================================
-// ROTAS DE GESTÃO DE CLIENTES (ADMINISTRADOR)
-// ==========================================
 app.get('/admin/clientes', ClienteController.listarClientes);
 app.get('/admin/clientes/editar/:id', ClienteController.exibirEditarCliente);
 app.post('/admin/clientes/salvar', ClienteController.salvarEdicaoCliente);
 app.post('/admin/clientes/excluir/:id', ClienteController.excluirCliente);
 
-// ==========================================
-// ROTAS GERAIS E AUTENTICAÇÃO
-// ==========================================
+
 app.get('/login', (req, res) => res.render('layouts/login', { title: 'Nexus Store - Autenticação' }));
-app.get('/minha-conta', (req, res) => res.render('minhaconta', { title: 'Nexus Store - Minha Conta' }));
 app.get('/admin/pedidos', (req, res) => res.redirect('/pedidos'));
 
 app.use('/', pedidosRoutes);
@@ -196,9 +215,6 @@ app.get('/logout', (req, res) => {
     req.session.destroy(() => { res.redirect('/login'); });
 });
 
-// ==========================================
-// INICIALIZAÇÃO DO SERVIDOR
-// ==========================================
 if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`[SERVER] Servidor rodando com sucesso em http://localhost:${PORT}`);

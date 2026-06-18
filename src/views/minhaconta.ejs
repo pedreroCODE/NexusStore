@@ -1,88 +1,87 @@
 <%- include('partials/header') %>
 
-<div class="bg-white p-4 p-md-5 rounded-3 shadow-sm border mx-auto" style="max-width: 900px;">
-    <h3 class="fw-bold text-dark mb-4">Minha Conta</h3>
+<div class="bg-white p-4 rounded-3 shadow-sm border mx-auto" style="max-width: 850px;">
+    <h4 class="fw-bold text-dark mb-1">Minha Conta</h4>
+    <p class="text-muted small mb-4">Olá, <strong><%= cliente.nome %></strong>. Veja e gerencie seus dados cadastrais.</p>
 
-    <h5 class="text-dark fw-semibold mb-4" style="letter-spacing: -0.2px;">Olá, João da Silva. Seus dados cadastrais.</h5>
+    <form action="/admin/clientes/salvar" method="POST">
+        <input type="hidden" name="id_cliente" value="<%= cliente.id_cliente %>">
 
-    <form action="/minha-conta/atualizar" method="POST">
-        
-        <p class="text-muted small fw-bold mb-2 text-uppercase tracking-wider" style="font-size: 0.75rem;">Dados Pessoais</p>
-        
-        <div class="row g-3 mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Nome Completo</label>
-                <input type="text" class="form-control" name="nome" placeholder="Digite seu nome completo" value="João da Silva" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">E-mail</label>
-                <input type="email" class="form-control" name="email" placeholder="nome@exemplo.com" value="joao@exemplo.com" required readonly style="background-color: #e9ecef; opacity: 0.85;">
-            </div>
-        </div>
-
+        <h6 class="text-success fw-bold small text-uppercase mb-3" style="color: #0b4625 !important;">Dados Pessoais</h6>
         <div class="row g-3 mb-4">
             <div class="col-md-6">
-                <label class="form-label">Telefone</label>
-                <input type="text" class="form-control" name="telefone" placeholder="(00) 00000-0000">
+                <label class="form-label small text-muted">Nome Completo</label>
+                <input type="text" class="form-control" name="nome" value="<%= cliente.nome %>" required>
             </div>
             <div class="col-md-6">
-                <label class="form-label">CPF</label>
-                <input type="text" class="form-control" name="cpf" placeholder="000.000.000-00" required>
+                <label class="form-label small text-muted">E-mail</label>
+                <input type="email" class="form-control bg-light" name="email" value="<%= cliente.email %>" readonly required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small text-muted">Telefone</label>
+                <input type="text" class="form-control" name="telefone" value="<%= cliente.telefone || '' %>" placeholder="(00) 00000-0000">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small text-muted">CPF</label>
+                <input type="text" class="form-control" name="cpf" value="<%= cliente.cpf || '' %>" placeholder="000.000.000-00">
             </div>
         </div>
 
-        <p class="text-muted small fw-bold mb-2 text-uppercase tracking-wider" style="font-size: 0.75rem;">Endereço</p>
-        
-        <div class="row g-3 mb-3 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label">CEP</label>
+        <h6 class="text-success fw-bold small text-uppercase mb-3" style="color: #0b4625 !important;">Endereço de Entrega</h6>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label small text-muted">CEP</label>
                 <div class="input-group">
-                    <input type="number" class="form-control" name="cep" placeholder="CEP" value="86000000">
+                    <input type="text" class="form-control" name="cep" id="cep" value="<%= cliente.cep || '' %>" placeholder="86000000">
+                    <button class="btn btn-nexus small" type="button" style="font-size: 0.85rem;">Buscar CEP</button>
                 </div>
             </div>
-            <div class="col-md-2 ps-0">
-                <button type="button" class="btn text-white w-100 fw-semibold" style="background-color: #0b4625; padding: 0.52rem 0.5rem; font-size: 0.85rem; border: none;">Buscar CEP</button>
-            </div>
-            <div class="col-md-5">
-                <label class="form-label">Rua</label>
-                <input type="text" class="form-control" name="rua" placeholder="Rua" value="Avenida Principal">
+            <div class="col-md-6">
+                <label class="form-label small text-muted">Rua</label>
+                <input type="text" class="form-control" name="rua" value="<%= cliente.rua || '' %>" placeholder="Avenida Principal">
             </div>
             <div class="col-md-2">
-                <label class="form-label">Número</label>
-                <input type="number" class="form-control" name="numero" placeholder="Nº" value="100">
+                <label class="form-label small text-muted">Número</label>
+                <input type="text" class="form-control" name="numero" value="<%= cliente.numero || '' %>" placeholder="100">
             </div>
-        </div>
-
-        <div class="row g-3 mb-5">
             <div class="col-md-4">
-                <label class="form-label">Bairro</label>
-                <input type="text" class="form-control" name="bairro" placeholder="Bairro" value="Centro">
+                <label class="form-label small text-muted">Bairro</label>
+                <input type="text" class="form-control" name="bairro" value="<%= cliente.bairro || '' %>" placeholder="Centro">
             </div>
-            <div class="col-md-5">
-                <label class="form-label">Cidade</label>
-                <input type="text" class="form-control" name="cidade" placeholder="Cidade" value="Londrina">
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Cidade</label>
+                <input type="text" class="form-control" name="cidade" value="<%= cliente.cidade || '' %>" placeholder="Londrina">
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Estado</label>
-                <select class="form-select px-2" name="estado">
-                    <option value="PR" selected>PR</option>
-                    <option value="SP">SP</option>
-                    <option value="SC">SC</option>
-                    <option value="RS">RS</option>
-                </select>
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Estado</label>
+                <input type="text" class="form-control" name="estado" value="<%= cliente.estado || '' %>" placeholder="PR" maxlength="2">
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center border-top pt-4">
-            <button type="submit" class="btn text-white px-4 py-2 fw-semibold d-flex align-items-center rounded-2" style="background-color: #0c572e; border: none; font-size: 0.9rem;">
-                <i class="bi bi-arrow-left-right me-2"></i> Salvar Alterações
+        <div class="d-flex justify-content-between mt-4 border-top pt-3">
+            <button type="submit" class="btn btn-success px-4 py-2 fw-semibold d-flex align-items-center" style="background-color: #0b4625; border: none;">
+                <i class="bi bi-check-circle me-2"></i> Salvar Alterações
             </button>
             
-            <button type="button" class="btn btn-danger px-4 py-2 fw-semibold d-flex align-items-center rounded-2" style="font-size: 0.9rem;" onsubmit="return confirm('Tem certeza que deseja excluir sua conta permanentemente?')">
-                <i class="bi bi-trash3-fill me-2"></i> Excluir minha conta
-            </button>
+            <% if (cliente.email !== 'admin@nexus.local') { %>
+                <button type="button" class="btn btn-danger px-4 py-2 fw-semibold" onclick="excluirMinhaConta('<%= cliente.id_cliente %>')">
+                    <i class="bi bi-trash3 me-2"></i> Excluir minha conta
+                </button>
+            <% } %>
         </div>
     </form>
 </div>
+
+<script>
+    function excluirMinhaConta(id) {
+        if (confirm('Tem certeza absoluta que deseja excluir permanentemente a sua conta e todo o seu histórico de nossa loja?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/clientes/excluir/' + id;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
 
 <%- include('partials/footer') %>
