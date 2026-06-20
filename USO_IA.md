@@ -1,6 +1,6 @@
 # Relatório de Governança e Uso de Inteligência Artificial
 
-Este documento cumpre as exigências do Manual do Projeto Prático da disciplina de Tópicos Especiais. Ele detalha, de forma transparente e crítica, como a Inteligência Artificial atuou como nossa assistente de engenharia e co-piloto de desenvolvimento no ecossistema da **Nexus Store**.
+Este documento cumpre as exigências do Manual do Projeto Prático da disciplina de Tópicos Especiais. Ele detalha, de forma transparente e crítica, como a Inteligência Artificial atuou como nossa assistente de engenharia e co-piloto de desenvolvimento no ecossistema da Nexus Store.
 
 
 ## Fases de Desenvolvimento Auxiliadas & Prompts Reais
@@ -18,7 +18,7 @@ Este documento cumpre as exigências do Manual do Projeto Prático da disciplina
 - A IA analisou o nosso arquivo de rotas e identificou que o Express realiza a busca a partir da pasta declarada em `app.set('views')`. O erro acontecia porque o nosso arquivo físico estava dentro de `views/pedidos/carrinho.ejs` e a chamada tentava ler `carrinho/carrinho`. Corrigimos o ponteiro da rota diretamente no `app.js` sem alterar a organização física de diretórios.
 
 
-## 📊 Análise Crítica da Experiência Coletiva
+##  Análise Crítica da Experiência Coletiva
 
 ###  Vantagens
 - Aceleração do Debug: O principal ganho foi a velocidade para interpretar os erros do Express (como o mapeamento incorreto das extensões das views de `.js` para `.ejs`), evitando que o grupo perdesse horas paralisado em detalhes de configuração local.
