@@ -3,7 +3,6 @@ const session = require('express-session');
 const path = require('path');
 const db = require('./src/database/conexao');
 
-// Importa rotas e controllers
 const pedidosRoutes = require('./src/routes/pedidosRoutes');
 const ClienteController = require('./src/controllers/ClienteController');
 const CategoriaController = require('./src/controllers/CategoriaController');
@@ -27,7 +26,7 @@ app.use(session({
     cookie: { secure: false } 
 }));
 
-// Middleware Global (Configura variáveis para o EJS)
+
 app.use((req, res, next) => {
     res.locals.usuarioLogado = req.session.usuario || null;
     res.locals.currentPath = req.path;
@@ -46,16 +45,14 @@ const verificarAutenticacao = (req, res, next) => {
         return next();
     }
     
-    // Se não está logado e tentou acessar uma rota restrita, vai direto pro login
+   
     res.redirect('/login');
 };
 
-// Aplica a trava de segurança em todas as rotas do site
+
 app.use(verificarAutenticacao);
 
-// ==========================================
-// ROTA PRINCIPAL (HOME)
-// ==========================================
+// home
 app.get('/', async (req, res) => {
     try {
         const categoriaFiltro = req.query.categoria; 
@@ -93,17 +90,17 @@ app.get('/', async (req, res) => {
 
 app.get('/minha-conta', async (req, res) => {
     try {
-        // Pega o ID do usuário que está logado na sessão atual
+        
         const idClienteLogado = req.session.usuario.id_cliente;
 
-        // Busca todas as colunas desse cliente específico direto no banco
+        
         const [dadosDoCliente] = await db.query('SELECT * FROM Cliente WHERE id_cliente = ?', [idClienteLogado]);
 
         if (dadosDoCliente.length === 0) {
             return res.redirect('/logout');
         }
 
-        // Renderiza a tela enviando os dados reais e completos vindos do banco
+        
         res.render('minhaconta', { 
             title: 'Nexus Store - Minha Conta', 
             cliente: dadosDoCliente[0] 
